@@ -32,13 +32,13 @@ The `requirements.txt` file contains the necessary dependencies to run the web a
 
 ## Results
 
-### Dino Training Results
-
-![Dino Training Results](assets/dinov2_res.png)
-
 ### Resnet Training Results
 
 ![Resnet Training Results](assets/resnet_res.png)
+
+### DinoV2 Training Results
+
+![Dino Training Results](assets/dinov2_res.png)
 
 ## Installation
 
