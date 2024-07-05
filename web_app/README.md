@@ -1,4 +1,4 @@
-# PAIcon Demo
+# PAICON Demo
 
 This repository contains the training/validation scripts and a web app for a trained ResNet and DINOv2 model.
 
@@ -32,10 +32,13 @@ The `requirements.txt` file contains the necessary dependencies to run the web a
 
 ## Results
 
-Here are some results from the model:
+### Resnet Training Results
+
+![Resnet Training Results](assets/resnet_res.png)
+
+### DinoV2 Training Results
 
 ![Dino Training Results](assets/dinov2_res.png)
-![Resnet Training Results](assets/resnet_res.png)
 
 ## Installation
 
