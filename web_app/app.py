@@ -6,7 +6,6 @@ import torch
 import torchvision.transforms as transforms
 from torchvision import models
 import torch.nn as nn
-from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
 import numpy as np
 from pytorch_grad_cam import GradCAM
@@ -89,26 +88,8 @@ def classify_image(image_path, model_name):
     torch.save(img_t, tensor_path)
     return top_catid.item(), probabilities.tolist()
 
-# Setup basic authentication
-auth = HTTPBasicAuth()
-os.environ['APP_USERNAME'] = 'admin'
-os.environ['APP_PASSWORD'] = 'paicon$'
-
-# Get credentials from environment variables
-username = os.environ.get("APP_USERNAME")
-password = os.environ.get("APP_PASSWORD")
-
-users = {
-    username: generate_password_hash(password)
-}
-
-@auth.verify_password
-def verify_password(username, password):
-    if username in users and check_password_hash(users.get(username), password):
-        return username
-
 @app.route('/', methods=['GET', 'POST'])
-@auth.login_required
+#@auth.login_required
 def upload_file():
     if request.method == 'POST':
         model_name = request.form.get('model')
