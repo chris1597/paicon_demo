@@ -1,4 +1,4 @@
-# PAIcon Demo
+# PAICON Demo
 
 This repository contains the training/validation scripts and a web app for a trained ResNet and DINOv2 model.
 
