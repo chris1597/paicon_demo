@@ -55,10 +55,12 @@ The `requirements.txt` file contains the necessary dependencies to run the web a
 
 3. Run the web app:
     ```sh
+    cd web_app
     python app.py
     ```
 
 3. Run the training:
     ```sh
-    python classifier/train.py
+    cd classifier
+    python train.py
     ```
