@@ -12,15 +12,15 @@ You can deploy the web app on your local machine.
 
 1. **Download DINOv2 Model**
    - [DINOv2 Model](https://drive.google.com/file/d/17yb6Drdt_RKQgmTrA9aAf3EQox2lpiqS/view?usp=drive_link)
-   - Place the DINOv2 model in the root folder.
+   - Place the DINOv2 model in the web_app folder.
 
 2. **Download ResNet Model**
    - [ResNet Model](https://drive.google.com/file/d/1-0l1mjj3UGm1FGW0hcE7ibcfES87aXYk/view?usp=drive_link)
-   - Place the ResNet model in the root folder.
+   - Place the ResNet model in the web_app folder.
 
 3. **Download SafeTensor File**
    - [SafeTensor File](https://drive.google.com/file/d/1HRTnHojH_prAdfWv6XdjuMhiF-0IpbRk/view?usp=drive_link)
-   - Place the SafeTensor file inside the `dinov2-large` folder.
+   - Place the SafeTensor file inside the web_app/`dinov2-large` folder.
 
 ### Web App
 
