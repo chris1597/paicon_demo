@@ -1,3 +1,4 @@
 web_app/dinov2.pth
 web_app/resnet.pth
 web_app/dinov2-large/model.safetensors
+web_app/static/uploads
