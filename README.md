@@ -12,15 +12,15 @@ You can deploy the web app on your local machine.
 
 1. **Download DINOv2 Model**
    - [DINOv2 Model](https://drive.google.com/file/d/17yb6Drdt_RKQgmTrA9aAf3EQox2lpiqS/view?usp=drive_link)
-   - Place the DINOv2 model in the root folder.
+   - Place the DINOv2 model in the web_app folder.
 
 2. **Download ResNet Model**
    - [ResNet Model](https://drive.google.com/file/d/1-0l1mjj3UGm1FGW0hcE7ibcfES87aXYk/view?usp=drive_link)
-   - Place the ResNet model in the root folder.
+   - Place the ResNet model in the web_app folder.
 
 3. **Download SafeTensor File**
    - [SafeTensor File](https://drive.google.com/file/d/1HRTnHojH_prAdfWv6XdjuMhiF-0IpbRk/view?usp=drive_link)
-   - Place the SafeTensor file inside the `dinov2-large` folder.
+   - Place the SafeTensor file inside the web_app/`dinov2-large` folder.
 
 ### Web App
 
@@ -44,7 +44,7 @@ The `requirements.txt` file contains the necessary dependencies to run the web a
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/paicon_demo.git
+    git clone https://github.com/chris1597/paicon_demo.git
     cd paicon_demo
     ```
 
@@ -55,10 +55,12 @@ The `requirements.txt` file contains the necessary dependencies to run the web a
 
 3. Run the web app:
     ```sh
+    cd web_app
     python app.py
     ```
 
 3. Run the training:
     ```sh
-    python classifier/train.py
+    cd classifier
+    python train.py
     ```
