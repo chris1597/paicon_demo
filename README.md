@@ -44,7 +44,7 @@ The `requirements.txt` file contains the necessary dependencies to run the web a
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/paicon_demo.git
+    git clone https://github.com/chris1597/paicon_demo.git
     cd paicon_demo
     ```
 
