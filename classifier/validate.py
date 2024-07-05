@@ -12,12 +12,12 @@ from google.colab import drive
 
 data_folder = '/content/drive/My Drive/paicon_data'
 
-# Define transformations (same as in the training script)
+# Define validation transformations
 transform = transforms.Compose([
-    transforms.Resize((518, 518)),  # Resize to a larger size first
-    transforms.CenterCrop((518, 518)),  # Center crop to 518x518
+    transforms.Resize((518, 518)),  
+    transforms.CenterCrop((518, 518)),
     transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]), # Normalize
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
 # Load the complete dataset

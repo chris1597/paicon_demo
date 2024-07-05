@@ -13,6 +13,7 @@ from pytorch_grad_cam import GradCAM
 from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
 from pytorch_grad_cam.utils.image import show_cam_on_image
 from transformers import AutoImageProcessor, Dinov2ForImageClassification, Dinov2Config
+import cv2
 
 # Initialize the Flask application
 app = Flask(__name__)
@@ -142,11 +143,11 @@ def generate_gradcam(filename):
     try:
         model_name = request.args.get('model')
         class_id = request.args.get('class_id')
-
+        
         # Load the preprocessed image tensor
         tensor_path = os.path.join(app.config['UPLOAD_FOLDER'], 'preprocessed_' + filename + '.pt')
         img_t = torch.load(tensor_path).unsqueeze(0)
-
+       
         # Convert the tensor back to the original image format for visualization
         img = img_t.squeeze().permute(1, 2, 0).numpy()
         img = img * np.array([0.229, 0.224, 0.225]) + np.array([0.485, 0.456, 0.406])
@@ -156,15 +157,15 @@ def generate_gradcam(filename):
             target_layers = [resnet_model.layer4[-1]]
             cam = GradCAM(model=resnet_model, target_layers=target_layers)
         elif model_name == 'DinoV2':
-            print(dinov2_model)
+            target_layers = [dinov2_model.classifier]
+            cam = GradCAM(model=dinov2_model, target_layers=target_layers)
         else:
             raise ValueError(f"Unknown model name: {model_name}")
-        
         # Define the target class (Change the class index as needed for your specific task)
-        targets = [ClassifierOutputTarget(int(class_id))]
+        targets = [ClassifierOutputTarget(int(class_id))]  # Adjust target class index for your resnet_model's specific class
 
         # Generate the Grad-CAM heatmap
-        grayscale_cam = cam(input_tensor=img_t, targets=targets, aug_smooth=True,eigen_smooth=True)
+        grayscale_cam = cam(input_tensor=img_t, targets=targets, aug_smooth=True)
 
         # In this example grayscale_cam has only one image in the batch
         grayscale_cam = grayscale_cam[0, :]
@@ -172,15 +173,14 @@ def generate_gradcam(filename):
         # Visualize the heatmap
         visualization = show_cam_on_image(img, grayscale_cam, use_rgb=True)
 
-        # Convert the numpy array to a PIL Image and save
-        visualization_image = Image.fromarray((visualization * 255).astype(np.uint8))
+        # Save the Grad-CAM image
         gradcam_image_path = os.path.join(app.config['UPLOAD_FOLDER'], 'gradcam_' + filename)
-        visualization_image.save(gradcam_image_path)
+        cv2.imwrite(gradcam_image_path, cv2.cvtColor(visualization, cv2.COLOR_RGB2BGR))
 
         return 'gradcam_' + filename
     except Exception as e:
         print(f"Error generating Grad-CAM image: {e}")
-        return '', 500 
+        return '', 500
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5001))
