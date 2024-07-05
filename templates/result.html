@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <title>Image Classification Result</title>
+  <style>
+    body {
+      padding-top: 50px;
+    }
+    .container {
+      max-width: 600px;
+    }
+    .result-img {
+      max-width: 100%;
+      max-height: 300px;
+      margin-top: 30px;
+    }
+    .logo {
+      max-width: 400px;
+      display: block;
+      margin: 0 auto 30px;
+    }
+    .spacer {
+      margin-top: 30px;
+    }
+    .chart {
+      max-width: 100%;
+      margin-top: 30px;
+    }
+    .bottom-spacer {
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="{{ url_for('static', filename='logo.svg') }}" class="logo" alt="Logo">
+    <h1 class="text-center">Classification of Precancerous Lesions of the Cervix</h1>
+    <h2 class="text-center spacer">{{ model_name }} Classification Result</h2>
+    <img id="result-image" src="{{ url_for('static', filename='uploads/' + filename) }}" class="result-img spacer" alt="Uploaded Image">
+    <div class="alert alert-info mt-4 spacer">
+      <p><strong>Class ID:</strong> {{ class_id }}</p>
+      <p><strong>Class Name:</strong> {{ class_name }}</p>
+    </div>
+    <canvas id="myChart" class="chart"></canvas>
+    
+    {% if model_name == 'ResNet' %}
+      <button id="gradcam-btn" class="btn btn-primary btn-block spacer bottom-spacer">Show Grad-CAM</button>
+    {% endif %}
+    
+    <a href="/" class="btn btn-primary btn-block spacer bottom-spacer">Upload Another Image</a>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var ctx = document.getElementById('myChart').getContext('2d');
+
+        var probabilities = {{ probabilities | tojson }};
+        
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['group_1', 'group_2', 'group_3'],
+                datasets: [{
+                    data: probabilities,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(75, 192, 192, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                animation: {
+                    duration: 800,
+                    easing: 'linear'
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        {% if model_name == 'ResNet' %}
+        document.getElementById('gradcam-btn').addEventListener('click', function () {
+            var button = this;
+            var filename = "{{ filename }}";
+            var class_id = "{{ class_id }}";
+            var model_name = "{{ model_name }}";
+            button.disabled = true; // Disable the button
+            button.innerText = 'Loading...'; // Change button text
+
+            fetch(`/generate_gradcam/${filename}?model=${model_name}&class_id=${class_id}`)
+                .then(response => response.text())
+                .then(data => {
+                    var resultImage = document.getElementById('result-image');
+                    resultImage.src = `/static/uploads/${data}`;
+                    button.innerText = 'Show Grad-CAM'; // Reset button text
+                    button.disabled = false; // Enable the button
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    button.innerText = 'Show Grad-CAM'; // Reset button text
+                    button.disabled = false; // Enable the button
+                });
+        });
+        {% endif %}
+    });
+  </script>
+</body>
+</html>

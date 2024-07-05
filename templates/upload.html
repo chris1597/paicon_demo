@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <title>Upload an Image</title>
+  <style>
+    body {
+      padding-top: 50px;
+    }
+    .container {
+      max-width: 600px;
+    }
+    .preview-img {
+      max-width: 100%;
+      max-height: 300px;
+      margin-top: 40px; /* Increased margin */
+    }
+    .custom-file-label::after {
+      content: "Browse";
+    }
+    .drag-drop-zone {
+      border: 2px dashed #007bff;
+      padding: 30px;
+      text-align: center;
+      margin-top: 25px; /* Increased margin */
+      border-radius: 5px;
+      cursor: pointer;
+      color: #007bff;
+      font-size: 1.2em;
+    }
+    .drag-drop-zone.dragover {
+      background-color: #e9ecef;
+    }
+    .logo {
+      max-width: 650px; /* Significantly bigger logo */
+      display: block;
+      margin: 0 auto 25px; /* Increased margin */
+    }
+    .spacer {
+      margin-top: 25px; /* Increased margin */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="{{ url_for('static', filename='logo.svg') }}" class="logo" alt="Logo">
+    <h1 class="text-center">Classification of Precancerous Lesions of the Cervix</h1>
+    <h2 class="text-center spacer">Upload an Image</h2>
+    <form id="upload-form" method="post" enctype="multipart/form-data">
+      <div class="form-group spacer">
+        <div class="custom-file">
+          <input type="file" class="custom-file-input" id="file" name="file" onchange="previewImage(event)">
+          <label class="custom-file-label" for="file">Choose file</label>
+        </div>
+      </div>
+      <div class="drag-drop-zone spacer" id="drag-drop-zone">
+        Drag and drop an image here or click to upload
+      </div>
+      <div class="row spacer">
+        <div class="col">
+          <button type="button" class="btn btn-primary btn-block" id="resnet-button">ResNet</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn btn-secondary btn-block" id="dinov2-button">DinoV2</button>
+        </div>
+      </div>
+    </form>
+    <img id="preview" class="preview-img spacer" src="#" alt="Image Preview" style="display: none;">
+  </div>
+  <script>
+    // Update the label text when a file is selected
+    document.querySelector('.custom-file-input').addEventListener('change', function (e) {
+      var fileName = document.getElementById("file").files[0].name;
+      var nextSibling = e.target.nextElementSibling;
+      nextSibling.innerText = fileName;
+    });
+
+    // Preview the image
+    function previewImage(event) {
+      var reader = new FileReader();
+      reader.onload = function(){
+        var output = document.getElementById('preview');
+        output.src = reader.result;
+        output.style.display = 'block';
+      }
+      reader.readAsDataURL(event.target.files[0]);
+    }
+
+    // Drag and drop functionality
+    var dropZone = document.getElementById('drag-drop-zone');
+
+    dropZone.addEventListener('dragover', function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      dropZone.classList.remove('dragover');
+
+      var files = event.dataTransfer.files;
+      if (files.length > 0) {
+        document.getElementById('file').files = files;
+        var fileName = files[0].name;
+        var nextSibling = document.getElementById('file').nextElementSibling;
+        nextSibling.innerText = fileName;
+        previewImage({target: {files: files}});
+      }
+    });
+
+    dropZone.addEventListener('click', function() {
+      document.getElementById('file').click();
+    });
+
+    // Custom click functions for the "ResNet" and "DinoV2" buttons
+    document.getElementById('resnet-button').addEventListener('click', function(event) {
+      event.preventDefault();
+
+      // Optionally, set a hidden input to indicate which button was clicked
+      var hiddenInput = document.createElement('input');
+      hiddenInput.type = 'hidden';
+      hiddenInput.name = 'model';
+      hiddenInput.value = 'ResNet';
+      document.getElementById('upload-form').appendChild(hiddenInput);
+      // Submit the form
+      document.getElementById('upload-form').submit();
+    });
+
+    document.getElementById('dinov2-button').addEventListener('click', function(event) {
+      event.preventDefault();
+
+      // Optionally, set a hidden input to indicate which button was clicked
+      var hiddenInput = document.createElement('input');
+      hiddenInput.type = 'hidden';
+      hiddenInput.name = 'model';
+      hiddenInput.value = 'DinoV2';
+      document.getElementById('upload-form').appendChild(hiddenInput);
+      // Submit the form
+      document.getElementById('upload-form').submit();
+    });
+  </script>
+</body>
+</html>
